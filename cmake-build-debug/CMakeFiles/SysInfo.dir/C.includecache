@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/rhys/scripts/c/SysInfo/main.c
+stdio.h
+-
+procs.c
+/home/rhys/scripts/c/SysInfo/procs.c
+
+/home/rhys/scripts/c/SysInfo/procs.c
+dirent.h
+-
+string.h
+-
+ctype.h
+-
+stdlib.h
+-
+
