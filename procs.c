@@ -21,28 +21,17 @@ typedef struct Proc_List{
     proc* list;
 } proc_list;
 
-int isnumber(const char* to_test){
-    for(int i=0 ; i<strlen(to_test) ; i++){
-        if(!isdigit(to_test[i])){
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
 proc split_ps(char* in){
     char *token = strtok(in, " \t");
     int i = 0;
-
-    printf("\n\n\n");
 
     proc out;
 
     while (token) {
         if(i == 0){
-            out.user = calloc(strlen(token), sizeof(char));
-            strcpy(out.user, token);
+            unsigned int len = strlen(token)+1;
+            out.user = calloc(len, sizeof(char));
+            strncpy(out.user, token, len);
         }if(i == 1){
             out.pid = atoi(token);
         }else if(i == 2){
@@ -72,6 +61,13 @@ proc split_ps(char* in){
     return out;
 }
 
+void free_proc_list(proc_list* in){
+    for(int p=0 ; p < in->length ; p++){
+        free(in->list[p].command);
+        free(in->list[p].user);
+    }
+}
+
 proc_list read_procs(){
     FILE *fp;
     char path[1035];
@@ -93,17 +89,15 @@ proc_list read_procs(){
 
         proc p = split_ps(path);
 
-        printf("User: %s\n", p.user);
-
-        out.length++;
-
-        if(out.length == 1){
+        if(out.list == NULL){
             out.list = malloc(sizeof(p));
         }else{
-            out.list = realloc(out.list, (sizeof(out.list)+sizeof(p)));
+            out.list = realloc(out.list, (strlen(out.list->user)+strlen(out.list->command))*sizeof(p) );
         }
 
         out.list[out.length] = p;
+
+        out.length++;
     }
 
     pclose(fp);
